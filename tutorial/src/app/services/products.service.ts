@@ -26,7 +26,7 @@ export class ProductsService {
     editProducts = (url: string, body: Product): Observable<Product> => {
         return this.apiService.put(url, body, {});
     };
-    deleteProducts = (url: string, body: Product): Observable<Product> => {
+    deleteProducts = (url: string): Observable<Product> => {
         return this.apiService.delete(url, {});
     };
 }

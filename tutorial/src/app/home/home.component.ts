@@ -4,11 +4,17 @@ import { Product, Products } from '../../types';
 import { ProductComponent } from '../components/product/product.component';
 import { CommonModule } from '@angular/common';
 import { PaginatorModule } from 'primeng/paginator';
+import { EditPopupComponent } from '../components/edit-popup/edit-popup.component';
 
 @Component({
     selector: 'app-home',
     standalone: true,
-    imports: [CommonModule, ProductComponent, PaginatorModule],
+    imports: [
+        CommonModule,
+        ProductComponent,
+        PaginatorModule,
+        EditPopupComponent,
+    ],
     templateUrl: './home.component.html',
     styleUrl: './home.component.scss',
 })
@@ -19,6 +25,41 @@ export class HomeComponent {
 
     totalRecords: number = 0;
     rows: number = 5;
+    private initialpage: number = 0;
+
+    displayEditPopup: boolean = false;
+    displayAddPopup: boolean = false;
+
+    selectedProduct: Product = {
+        id: 0,
+        name: '',
+        image: '',
+        price: '',
+        rating: 0,
+    };
+
+    toggleEditPopup(product: Product) {
+        this.selectedProduct = product;
+        this.displayEditPopup = true;
+    }
+
+    toggleAddPopup() {
+        this.displayAddPopup = true;
+    }
+
+    onConfirmEdit(product: Product) {
+        if (!this.selectedProduct.id) {
+            return;
+        }
+
+        this.editProduct(product, this.selectedProduct.id);
+        this.displayEditPopup = false;
+    }
+
+    onConfirmAdd(product: Product) {
+        this.adddProduct(product);
+        this.displayAddPopup = false;
+    }
 
     onProductOutput(product: Product) {
         console.log(product, 'Output');
@@ -34,9 +75,14 @@ export class HomeComponent {
                 page,
                 perPage,
             })
-            .subscribe((products: Products) => {
-                this.products = products.items;
-                this.totalRecords = products.total;
+            .subscribe({
+                next: (products: Products) => {
+                    this.products = products.items;
+                    this.totalRecords = products.total;
+                },
+                error: (error) => {
+                    console.log(error);
+                },
             });
     }
 
@@ -44,20 +90,45 @@ export class HomeComponent {
         this.productsService
             .editProducts(`http://localhost:3000/clothes/${id}`, product)
             .subscribe({
-                next: (data) => console.log(data),
-                error: (error) => console.log(error),
+                next: (data) => {
+                    console.log(data);
+                    this.fetchProducts(this.initialpage, this.rows);
+                },
+                error: (error) => {
+                    console.log(error);
+                },
             });
     }
 
-    deleteProduct(product: Product) {
-        console.log(product, 'Delete');
+    deleteProduct(id: number) {
+        this.productsService
+            .deleteProducts(`http://localhost:3000/clothes/${id}`)
+            .subscribe({
+                next: (data) => {
+                    console.log(data);
+                    this.fetchProducts(this.initialpage, this.rows);
+                },
+                error: (error) => {
+                    console.log(error);
+                },
+            });
     }
 
     adddProduct(product: Product) {
-        console.log(product, 'Add');
+        this.productsService
+            .editProducts('http://localhost:3000/clothes', product)
+            .subscribe({
+                next: (data) => {
+                    console.log(data);
+                    this.fetchProducts(this.initialpage, this.rows);
+                },
+                error: (error) => {
+                    console.log(error);
+                },
+            });
     }
 
     ngOnInit() {
-        this.fetchProducts(0, this.rows);
+        this.fetchProducts(this.initialpage, this.rows);
     }
 }
