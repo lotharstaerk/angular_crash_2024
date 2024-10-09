@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
-import { PagginationParams, Products } from '../../types';
+import { PagginationParams, Products, Product } from '../../types';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -17,5 +17,16 @@ export class ProductsService {
             params,
             responseType: 'json',
         });
+    };
+
+    addProducts = (url: string, body: Product): Observable<Product> => {
+        return this.apiService.post(url, body, {});
+    };
+
+    editProducts = (url: string, body: Product): Observable<Product> => {
+        return this.apiService.put(url, body, {});
+    };
+    deleteProducts = (url: string, body: Product): Observable<Product> => {
+        return this.apiService.delete(url, {});
     };
 }

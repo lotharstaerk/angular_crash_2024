@@ -40,6 +40,23 @@ export class HomeComponent {
             });
     }
 
+    editProduct(product: Product, id: number) {
+        this.productsService
+            .editProducts(`http://localhost:3000/clothes/${id}`, product)
+            .subscribe({
+                next: (data) => console.log(data),
+                error: (error) => console.log(error),
+            });
+    }
+
+    deleteProduct(product: Product) {
+        console.log(product, 'Delete');
+    }
+
+    adddProduct(product: Product) {
+        console.log(product, 'Add');
+    }
+
     ngOnInit() {
         this.fetchProducts(0, this.rows);
     }
