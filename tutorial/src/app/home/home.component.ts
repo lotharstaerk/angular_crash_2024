@@ -47,6 +47,8 @@ export class HomeComponent {
         this.displayAddPopup = true;
     }
 
+    toggleDeletePopup(product: Product) {}
+
     onConfirmEdit(product: Product) {
         if (!this.selectedProduct.id) {
             return;

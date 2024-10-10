@@ -13,10 +13,13 @@
         <app-product
             *ngFor="let product of products"
             [product]="product"
-            (productOutput)="onProductOutput($event)"
+            (edit)="toggleEditPopup($event)"
+            ;
+            (delete)="toggleDeletePopup($event)"
+            ;
         />
     </div>
-
+    <!-- (productOutput)="onProductOutput($event)" -->
     <!-- Paginator -->
     <p-paginator
         (onPageChange)="onPageChange($event)"
