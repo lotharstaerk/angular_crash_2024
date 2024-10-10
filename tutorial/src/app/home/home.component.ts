@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ProductsService } from '../services/products.service';
 import { Product, Products } from '../../types';
 import { ProductComponent } from '../components/product/product.component';
 import { CommonModule } from '@angular/common';
-import { PaginatorModule } from 'primeng/paginator';
+import { Paginator, PaginatorModule } from 'primeng/paginator';
 import { EditPopupComponent } from '../components/edit-popup/edit-popup.component';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
     selector: 'app-home',
@@ -14,12 +15,14 @@ import { EditPopupComponent } from '../components/edit-popup/edit-popup.componen
         ProductComponent,
         PaginatorModule,
         EditPopupComponent,
+        ButtonModule,
     ],
     templateUrl: './home.component.html',
     styleUrl: './home.component.scss',
 })
 export class HomeComponent {
     constructor(private productsService: ProductsService) {}
+    @ViewChild('paginator') paginator: Paginator | undefined;
 
     products: Product[] = [];
 
@@ -47,7 +50,9 @@ export class HomeComponent {
         this.displayAddPopup = true;
     }
 
-    toggleDeletePopup(product: Product) {}
+    toggleDeletePopup(product: Product) {
+        this.deleteProduct(product.id!);
+    }
 
     onConfirmEdit(product: Product) {
         if (!this.selectedProduct.id) {
@@ -118,7 +123,7 @@ export class HomeComponent {
 
     adddProduct(product: Product) {
         this.productsService
-            .editProducts('http://localhost:3000/clothes', product)
+            .addProducts('http://localhost:3000/clothes', product)
             .subscribe({
                 next: (data) => {
                     console.log(data);
