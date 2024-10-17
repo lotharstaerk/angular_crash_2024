@@ -51,7 +51,9 @@ export class HomeComponent {
     }
 
     toggleDeletePopup(product: Product) {
-        this.deleteProduct(product.id!);
+        if (!product.id) return;
+
+        this.deleteProduct(product.id);
     }
 
     onConfirmEdit(product: Product) {
@@ -76,6 +78,10 @@ export class HomeComponent {
         this.fetchProducts(event.page, event.rows);
     }
 
+    resetPaginator() {
+        this.paginator?.changePage(0);
+    }
+
     fetchProducts(page: number, perPage: number) {
         this.productsService
             .getProducts('http://localhost:3000/clothes', {
@@ -86,6 +92,7 @@ export class HomeComponent {
                 next: (products: Products) => {
                     this.products = products.items;
                     this.totalRecords = products.total;
+                    //this.resetPaginator();
                 },
                 error: (error) => {
                     console.log(error);
@@ -100,6 +107,7 @@ export class HomeComponent {
                 next: (data) => {
                     console.log(data);
                     this.fetchProducts(this.initialpage, this.rows);
+                    this.resetPaginator();
                 },
                 error: (error) => {
                     console.log(error);
@@ -114,6 +122,7 @@ export class HomeComponent {
                 next: (data) => {
                     console.log(data);
                     this.fetchProducts(this.initialpage, this.rows);
+                    this.resetPaginator();
                 },
                 error: (error) => {
                     console.log(error);
@@ -128,6 +137,7 @@ export class HomeComponent {
                 next: (data) => {
                     console.log(data);
                     this.fetchProducts(this.initialpage, this.rows);
+                    this.resetPaginator();
                 },
                 error: (error) => {
                     console.log(error);
