@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { PagginationParams, Products, Product } from '../../types';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
     providedIn: 'root',
@@ -9,11 +10,10 @@ import { Observable } from 'rxjs';
 export class ProductsService {
     constructor(private apiService: ApiService) {}
 
-    getProducts = (
-        url: string,
-        params: PagginationParams
-    ): Observable<Products> => {
-        return this.apiService.get(url, {
+    baseUrl: string = environment.APIUrl;
+
+    getProducts = (params: PagginationParams): Observable<Products> => {
+        return this.apiService.get(`${this.baseUrl}clothes`, {
             params,
             responseType: 'json',
         });
